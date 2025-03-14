@@ -1,0 +1,80 @@
+Using sed utility
+
+1- Display the lines that contain the word “lp” in /etc/passwd file.
+sed -n '/lp/p' /etc/passwd 
+========================================================
+2- Display /etc/passwd file except the third line.
+sed '3d' /etc/passwd
+========================================================
+3- Display /etc/passwd file except the last line.
+sed '$d' /etc/passwd
+========================================================
+4- Display /etc/passwd file except the lines that contain the word “lp”.
+sed '/lp/d' /etc/passwd
+========================================================
+5- Substitute all the words that contain “lp” with “mylp” in /etc/passwd file.
+sed -n 's/lp/mylp/gp' /etc/passwd
+========================================================
+========================================================
+Using awk utility
+
+1- Print full name (comment) of all users in the system.
+--awk -F: '
+       BEGIN{print "Start"}
+       {print "FullName: ",$5}
+       END{print "End"}' /etc/passwd
+========================================================
+2- Print login, full name (comment) and home directory of all users.( Print each line preceded 
+by a line number)
+--awk -F: '
+    BEGIN {print "Start"}
+    {print NR ": Login: ", $1 " Full Name: " ,$5," Home: " $6}
+    END {print "End"}' /etc/passwd
+========================================================
+3- Print login, uid and full name (comment) of those uid is greater than 500
+--awk -F: '
+       BEGIN{print "Start"}
+       if($3 < 500)
+       {print NR, ": Login: ", $1 ," uid: " ,$3 , $5}
+       END{"End"}' /etc/passwd
+========================================================
+4- Print login, uid and full name (comment) of those uid is exactly 500
+--awk -F: '
+    BEGIN {print "Start"}
+    if($3 == 500) 
+    {print NR ,": Login: " ,$1 ," uid: " ,$3 , $5}
+    END {print "End"}' /etc/passwd
+========================================================
+5- Print line from 5 to 15 from /etc/passwd
+--awk -F: '
+       BEGIN{print "Start"}
+       {print NR>=5 && NR<=15}
+       END{print "End"}' /etc/passwd
+========================================================
+6- Change lp to mylp
+--awk -F: '
+       i=1
+       while(i<=NF){
+         if($i=='lp'){
+         $i='mylp'
+         }
+          i=i+1
+       }print $0' /etc/passwd
+==built-in-function
+--awk -F: '
+         {gsub(/lp/, "mylp"); print $0}' /etc/passwd
+========================================================
+7- Print all information about greatest uid.
+--awk -F: '
+       BEGIN{max=0}
+       if($3 >max){
+          max =$3
+          line =$0
+        }
+       END{print "maxUid",max,line }' /etc/passwd
+========================================================
+8- Get the sum of all accounts id’s.
+--awk -F: '
+       BEGIN{sum=0}
+       {sum=sum+$3}
+       END{print "sum",sum}' /etc/passwd
